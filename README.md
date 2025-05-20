@@ -1,1 +1,1 @@
-# ai-end-project
+# AI-end-project
