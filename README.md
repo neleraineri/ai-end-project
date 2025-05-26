@@ -117,3 +117,5 @@ Due to GitHub's file size limits, all large files (datasets and models) are host
 - Feature importance visualizations (if available)
 - Hugging Face Space build and logs
 - [Gradio Documentation](https://gradio.app)
+- [Kaggle](https://www.kaggle.com/) — source of `watch_listings.csv` and `watch_prices.csv` datasets
+- [ChatGPT](https://chat.openai.com) — used for debugging, code explanation, and project support
