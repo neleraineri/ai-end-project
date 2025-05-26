@@ -1,101 +1,118 @@
-# ⌚ Watch Price Prediction
+# Watch Price Prediction
 
-## 🧠 Project Description
+## Project Description
 
-This machine learning project predicts the resale market value of luxury watches based on technical attributes and listing data. Two datasets (`watch_prices.csv` and `watch_listings.csv`) are merged, cleaned, and enriched with engineered features. Two models are trained to estimate the final price:
+This machine learning application predicts the second-hand market value of luxury wristwatches based on their physical characteristics and brand metadata. It merges marketplace listings with structured watch specifications and trains two regression models to estimate resale value.
 
-- 🌲 **Random Forest Regressor**
-- 📈 **Linear Regression**
-
-An interactive [Gradio](https://www.gradio.app) interface allows users to test the models by entering watch specifications.
+The final app allows users to input a set of watch features and receive a predicted price using a trained Random Forest or Linear Regression model.
 
 ---
 
-## 🧪 Results Summary
+## Results
 
-The **Random Forest model** clearly outperforms the linear regression model:
-- Much lower RMSE (prediction error)
-- Higher R² score (explained variance)
-- More stable cross-validation results
+The Random Forest model clearly outperformed the linear regression model in test accuracy and overall fit. However, both models are limited by feature simplicity (only 5 inputs). More complex features like diameter, movement, and strap material could improve performance significantly.
 
-> ✅ Using just 5 key features (`case_material`, `condition`, `automatic`, `brand`, `year`) already achieved strong results.  
-> ✨ These were selected for interpretability and consistent availability across sources.
+> With roughly 385,000 combined listing records, the model performs best when trained on standardized categorical features with engineered encodings.
 
 ---
 
-## 🔗 Project Links
+## Name & URLs
 
-| Type               | URL                                                                 |
+| Name               | URL                                                                 |
 |--------------------|----------------------------------------------------------------------|
-| 🧠 Hugging Face     | *[Add your Hugging Face Space URL]*                                 |
-| 💻 GitHub Repository| [https://github.com/neleraineri/ai-end-project](https://github.com/neleraineri/ai-end-project) |
+| Hugging Face Space | [Watch Price Prediction](https://huggingface.co/spaces/rainele/watch_prediction) |
+| GitHub Repository  | [ai-end-project](https://github.com/neleraineri/ai-end-project)     |
 
 ---
 
-## 📚 Data Sources
+## Data Sources and Features Used
 
-| File               | Description                                                |
-|--------------------|------------------------------------------------------------|
-| `watch_listings.csv` | Marketplace listings: brand, model, price, condition, etc. |
-| `watch_prices.csv`   | Specs like diameter, material, strap, and water resistance |
+| Source File         | Features Used                                                                 |
+|---------------------|-------------------------------------------------------------------------------|
+| `watch_listings.csv`| brand, model, price, case material, condition, movement, year of production  |
+| `watch_prices.csv`  | technical specs including material, strap, water resistance, and model detail|
 
-🛠️ **Merged on**: `brand` and `model`
-
----
-
-## 🧩 Engineered Features
-
-| Feature         | Description                                                  |
-|-----------------|--------------------------------------------------------------|
-| `case_material` | Encoded case material (steel, gold, ceramic, etc.)           |
-| `condition`     | Encoded condition (new, good, fair, unknown, etc.)           |
-| `automatic`     | Binary flag: whether movement includes "automatic"           |
-| `brand`         | Categorical brand encoding                                   |
-| `year`          | Extracted from year strings in listings (e.g., “2019”)       |
+**Merge key:** `brand` and `model` (inner join)
 
 ---
 
-## ⚙️ Model Training Details
+## Features Created
 
-### 📊 Dataset Summary
-- Final merged dataset: **~385,000 rows** after cleaning
-- 80/20 Train/Test split
-- 5-fold Cross-Validation applied for reliability
-
----
-
-## 🔍 Model Comparison (Final Metrics)
-
-| Model             | Test R² | Test RMSE     | CV RMSE     | Notes                                  |
-|------------------|---------|---------------|-------------|----------------------------------------|
-| Linear Regression | 0.004   | 110,268.60    | 109,106.47  | Severely underfits, fails to generalize |
-| Random Forest     | 0.348   | 89,185.20     | 87,893.65   | Stronger performance and generalization |
-
-### ✅ Interpretation
-
-The **Random Forest model** significantly outperformed **Linear Regression**:
-
-- It reduced the prediction error by over **21,000 USD**
-- It explained **34.8%** of the price variance compared to just **0.4%**
-- It demonstrated more stable cross-validation results
-
-> 🔍 **Conclusion**: Random Forest is the preferred model. It better handles the complexity and variance in watch prices and produces more trustworthy results.
+| Feature Name        | Description                                                                |
+|---------------------|----------------------------------------------------------------------------|
+| `case_material`     | Encoded material of the case (e.g., steel, gold, ceramic)                  |
+| `condition`         | Encoded watch condition (new, good, unknown)                               |
+| `automatic`         | Binary feature if movement string contains "automatic"                     |
+| `brand`             | Categorical encoding of brand names                                        |
+| `year`              | Parsed 4-digit year from noisy production year string (e.g., "c. 2010")    |
 
 ---
 
-## 💡 Future Work & Improvements
+## Model Training
 
-- Add case diameter, strap material, and movement type as features
-- Use Gradient Boosting (XGBoost, LightGBM) for potential gains
-- Explore brand-based clustering or segmentation
-- Integrate visual data (images, watch face types, etc.)
-- Outlier detection and filtering to improve generalization
+### Dataset Size
+
+- Final cleaned dataset: ~385,000 entries
+- Five selected input features: `case_material`, `condition`, `automatic`, `brand`, `year`
+
+### Data Splitting Method
+
+- 80/20 Train-Test split
+- Additional 5-fold Cross Validation for RMSE scoring
 
 ---
 
-## 🎛️ App Interface & Deployment
+## Performance Comparison
 
-- Built using [Gradio](https://gradio.app)
-- Users select case material, condition, brand, and year
-- Model predicts expected resale value
-- Available as a Hugging Face Space for interactive access
+| Model             | R² (Test) | RMSE (Test) | CV RMSE     | Notes                               |
+|------------------|-----------|-------------|-------------|-------------------------------------|
+| Linear Regression | 0.004     | 110,268.60  | 109,106.47  | Very weak linear fit (underfitting) |
+| Random Forest     | 0.348     | 89,185.20   | 87,893.65   | Performs significantly better       |
+
+### Interpretation
+
+- Random Forest model captures non-linear interactions between features better.
+- Linear Regression fails to explain price variance due to simplistic assumptions.
+- The feature space is too limited for strong predictions — additional fields like diameter, strap material, or watch reference would be beneficial.
+
+---
+
+## App Deployment
+
+- Gradio-based interface
+- Users select: model, case material, brand, condition, automatic flag, and year
+- App returns predicted watch resale value using selected model
+
+---
+
+## External Downloads
+
+Due to GitHub's file size limit, all large files (datasets and models) are hosted externally on SwitchDrive:
+
+**Download all project files:**  
+[https://drive.switch.ch/index.php/s/aaxUVcf2uKY2pps](https://drive.switch.ch/index.php/s/aaxUVcf2uKY2pps)
+
+**Included files:**
+- `watch_rf_model.pkl` — Trained Random Forest model  
+- `watch_lr_model.pkl` — Trained Linear Regression model  
+- `cleaned_watch_data.csv` — Final merged dataset used for training  
+- `watch_listings.csv` — Raw listing data  
+- `watch_prices.csv` — Technical specifications data
+
+---
+
+## Future Improvements
+
+- Add additional features: diameter, strap material, reference number
+- Integrate visual features (e.g., watch face images)
+- Use boosting models (XGBoost, LightGBM) for better generalization
+- Remove outliers and apply log transformation on price
+- Add brand reputation index or pre-trained watch category embeddings
+
+---
+
+## References
+
+- Feature importance charts (if applicable)
+- Hugging Face deployment logs
+- [Gradio Documentation](https://gradio.app)
