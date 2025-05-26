@@ -2,17 +2,20 @@
 
 ## Project Description
 
-This machine learning application predicts the second-hand market value of luxury wristwatches based on their physical characteristics and brand metadata. It merges marketplace listings with structured watch specifications and trains two regression models to estimate resale value.
+This machine learning project predicts the second-hand market value of luxury wristwatches using physical attributes and brand metadata. The workflow merges two datasets: marketplace listings and structured watch specifications. Feature engineering is applied, and two regression models are trained:
 
-The final app allows users to input a set of watch features and receive a predicted price using a trained Random Forest or Linear Regression model.
+- Random Forest Regressor
+- Linear Regression
+
+The final application allows users to enter watch characteristics and receive an estimated resale price via an interactive web interface.
 
 ---
 
 ## Results
 
-The Random Forest model clearly outperformed the linear regression model in test accuracy and overall fit. However, both models are limited by feature simplicity (only 5 inputs). More complex features like diameter, movement, and strap material could improve performance significantly.
+The Random Forest model significantly outperforms Linear Regression in both accuracy and generalization. However, due to the simplicity of the feature set (five inputs), both models have limited capacity to capture the full complexity of price dynamics.
 
-> With roughly 385,000 combined listing records, the model performs best when trained on standardized categorical features with engineered encodings.
+> The dataset includes ~385,000 records. The best results are achieved using standardized categorical features and basic engineered variables like production year and movement type.
 
 ---
 
@@ -27,24 +30,22 @@ The Random Forest model clearly outperformed the linear regression model in test
 
 ## Data Sources and Features Used
 
-| Source File         | Features Used                                                                 |
-|---------------------|-------------------------------------------------------------------------------|
-| `watch_listings.csv`| brand, model, price, case material, condition, movement, year of production  |
-| `watch_prices.csv`  | technical specs including material, strap, water resistance, and model detail|
+| Source File          | Features Used                                                                       |
+|----------------------|--------------------------------------------------------------------------------------|
+| `watch_listings.csv` | brand, model, price, case material, condition, movement, year of production         |
+| `watch_prices.csv`   | technical specifications including case material, bracelet type, movement type, and year of production |
 
 **Merge key:** `brand` and `model` (inner join)
 
----
-
 ## Features Created
 
-| Feature Name        | Description                                                                |
-|---------------------|----------------------------------------------------------------------------|
-| `case_material`     | Encoded material of the case (e.g., steel, gold, ceramic)                  |
-| `condition`         | Encoded watch condition (new, good, unknown)                               |
-| `automatic`         | Binary feature if movement string contains "automatic"                     |
-| `brand`             | Categorical encoding of brand names                                        |
-| `year`              | Parsed 4-digit year from noisy production year string (e.g., "c. 2010")    |
+| Feature Name        | Description                                                                 |
+|---------------------|-----------------------------------------------------------------------------|
+| `case_material`     | Encoded watch case material (e.g., steel, gold, ceramic); categorical codes |
+| `condition`         | Encoded watch condition (new, very good, good, etc.); mapped to integer     |
+| `automatic`         | Binary feature indicating if movement field contains the word "automatic"   |
+| `brand`             | Brand name encoded as categorical integer                                   |
+| `year`              | 4-digit year extracted from `yop` (year of production); numeric, imputed if missing |
 
 ---
 
@@ -64,55 +65,55 @@ The Random Forest model clearly outperformed the linear regression model in test
 
 ## Performance Comparison
 
-| Model             | R² (Test) | RMSE (Test) | CV RMSE     | Notes                               |
-|------------------|-----------|-------------|-------------|-------------------------------------|
-| Linear Regression | 0.004     | 110,268.60  | 109,106.47  | Very weak linear fit (underfitting) |
-| Random Forest     | 0.348     | 89,185.20   | 87,893.65   | Performs significantly better       |
+| Model              | R² (Test) | RMSE (Test) | CV RMSE     | Notes                                 |
+|-------------------|-----------|-------------|-------------|----------------------------------------|
+| Linear Regression  | 0.004     | 110,268.60  | 109,106.47  | Underfits significantly; low variance explained |
+| Random Forest      | 0.348     | 89,185.20   | 87,893.65   | Much stronger performance and generalization   |
 
 ### Interpretation
 
-- Random Forest model captures non-linear interactions between features better.
-- Linear Regression fails to explain price variance due to simplistic assumptions.
-- The feature space is too limited for strong predictions — additional fields like diameter, strap material, or watch reference would be beneficial.
+- The Random Forest model captures non-linear interactions between features more effectively.
+- Linear Regression fails to model the underlying complexity, leading to poor predictive power.
+- The limited feature space (5 features) constrains both models — including additional fields like diameter, strap material, or reference number could improve performance.
 
 ---
 
 ## App Deployment
 
-- Gradio-based interface
-- Users select: model, case material, brand, condition, automatic flag, and year
-- App returns predicted watch resale value using selected model
+- Gradio-based web interface
+- Users select: model type, case material, condition, automatic flag, brand, and year of production
+- The app predicts the expected resale value using the selected trained model
 
 ---
 
 ## External Downloads
 
-Due to GitHub's file size limit, all large files (datasets and models) are hosted externally on SwitchDrive:
+Due to GitHub's file size limits, all large files (datasets and models) are hosted externally on SwitchDrive:
 
-**Download all project files:**  
+**Download all project files here:**  
 [https://drive.switch.ch/index.php/s/aaxUVcf2uKY2pps](https://drive.switch.ch/index.php/s/aaxUVcf2uKY2pps)
 
 **Included files:**
 - `watch_rf_model.pkl` — Trained Random Forest model  
 - `watch_lr_model.pkl` — Trained Linear Regression model  
-- `cleaned_watch_data.csv` — Final merged dataset used for training  
-- `watch_listings.csv` — Raw listing data  
-- `watch_prices.csv` — Technical specifications data
+- `cleaned_watch_data.csv` — Final merged and preprocessed dataset  
+- `watch_listings.csv` — Raw listing data scraped or collected from marketplaces  
+- `watch_prices.csv` — Technical specifications data per model reference
 
 ---
 
 ## Future Improvements
 
-- Add additional features: diameter, strap material, reference number
-- Integrate visual features (e.g., watch face images)
-- Use boosting models (XGBoost, LightGBM) for better generalization
-- Remove outliers and apply log transformation on price
-- Add brand reputation index or pre-trained watch category embeddings
+- Add additional features: case diameter, strap material, reference numbers
+- Integrate image-based features (watch face, brand visuals, etc.)
+- Explore boosting algorithms like XGBoost or LightGBM
+- Apply outlier detection or price transformation (e.g. log-scale)
+- Add watch popularity, rarity, or resale index metrics
 
 ---
 
 ## References
 
-- Feature importance charts (if applicable)
-- Hugging Face deployment logs
+- Feature importance visualizations (if available)
+- Hugging Face Space build and logs
 - [Gradio Documentation](https://gradio.app)
